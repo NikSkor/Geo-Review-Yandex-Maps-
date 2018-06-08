@@ -5,11 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="http://vk.com/js/api/openapi.js" type="text/javascript"></script>
-    <title>Friend Filter</title>
+    <title>Geo Review (Yandex Maps)</title>
 </head>
 <body>
 <div class="wrapper" id="wrapper">
-    {{> "page.hbs"}}
+    <div class="map" id='map'></div>
+    {{!-- <div id="reviewBlock" class="reviewBlock visually-hidden" data-coord="" data-address="" data-position="">
+                {{> "./src/templates/makeFormTemplate.hbs"}}
+    </div> --}}
 </div>
 </body>
 </html>
