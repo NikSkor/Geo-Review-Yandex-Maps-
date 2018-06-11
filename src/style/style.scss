@@ -1,3 +1,10 @@
+$orange: #ff8663;
+
+@import url('https://fonts.googleapis.com/css?family=Fira+Sans:300,400,500&subset=cyrillic');
+@import './rev.scss';
+@import './scroll.scss';
+@import './form.scss';
+
 * {
     box-sizing: border-box;
 }
@@ -26,6 +33,8 @@ h1,h2,h3,h4,h5,h6 {
     margin: 0;
 }
 .map {
-    width: 1280px;
-    height: 770px;
+    width: 100%;
+    height: 100%;
+    position: relative;
 }
+
