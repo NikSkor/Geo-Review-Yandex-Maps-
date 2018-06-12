@@ -1,97 +1,144 @@
-export function getMap() {
-    let myMap;
+// import { getDate } from './date.js';
+import getView from './js/view.js';
+import getSet from './js/set.js';
 
-    // ymaps.ready(init);
+// let revBlock = document.querySelector('.review__block');
+// let closeBtn = document.querySelector('.header__button');
+// let revList = document.querySelector('.review__list');
+// let inputName = document.querySelector('.form__input_name');
+// let inputPlace = document.querySelector('.form__input_place');
+// let inputText = document.querySelector('.form__textarea__text');
+// let saveBtn = document.querySelector('.form__btn');
+// let form = document.querySelector('.form');
+// let inputsArr = [inputName, inputPlace, inputText];
+// let headTitle = document.querySelector('.header__title');
+// const addressInput = document.getElementById('address');
+// // скрытое поле для координат
+// const coordsInput = document.getElementById('coords');
+// const comments = localStorage.getItem('comments') ? JSON.parse(localStorage.getItem('comments')) : [];
+let map = document.querySelector('.map');
+let storage = getSet.getReviews();
+let clusterer;
 
-    // function init () {
-    //     myMap = new ymaps.Map('map', {
-    //         center: [55.76, 37.64],
-    //         zoom: 10
-    //     }, {
-    //         searchControlProvider: 'yandex#search'
-    //     });
+let myMap;
 
-    //     // document.getElementById('destroyButton').onclick = function () {
-    //     //     myMap.destroy();
-    //     // };
+ymaps.ready(init);
 
-    // }
-
-    ymaps.ready(function () {
-        var mapCenter = [55.755381, 37.619044],
-            map = new ymaps.Map('map', {
-                center: mapCenter,
-                zoom: 9,
-                controls: []
-            });
-    
-        // Создаем собственный макет с информацией о выбранном геообъекте.
-        var customItemContentLayout = ymaps.templateLayoutFactory.createClass(
-            // Флаг "raw" означает, что данные вставляют "как есть" без экранирования html.
-            '<h2 class=ballon_header>{{ properties.balloonContentHeader|raw }}</h2>' +
-                '<div class=ballon_body>{{ properties.balloonContentBody|raw }}</div>' +
-                '<div class=ballon_footer>{{ properties.balloonContentFooter|raw }}</div>'
-        );
-    
-        var clusterer = new ymaps.Clusterer({
-            preset: 'islands#invertedDarkOrangeClusterIcons',
-            clusterDisableClickZoom: true,
-            clusterOpenBalloonOnClick: true,
-            // Устанавливаем стандартный макет балуна кластера "Карусель".
-            clusterBalloonContentLayout: 'cluster#balloonCarousel',
-            // Устанавливаем собственный макет.
-            clusterBalloonItemContentLayout: customItemContentLayout,
-            // Устанавливаем режим открытия балуна. 
-            // В данном примере балун никогда не будет открываться в режиме панели.
-            clusterBalloonPanelMaxMapArea: 0,
-            // Устанавливаем размеры макета контента балуна (в пикселях).
-            clusterBalloonContentLayoutWidth: 200,
-            clusterBalloonContentLayoutHeight: 160,
-            // Устанавливаем максимальное количество элементов в нижней панели на одной странице
-            clusterBalloonPagerSize: 10
-            // Настройка внешего вида нижней панели.
-            // Режим marker рекомендуется использовать с небольшим количеством элементов.
-            // clusterBalloonPagerType: 'marker',
-            // Можно отключить зацикливание списка при навигации при помощи боковых стрелок.
-            // clusterBalloonCycling: false,
-            // Можно отключить отображение меню навигации.
-            // clusterBalloonPagerVisible: false
-        });
-    
-        // Заполняем кластер геообъектами со случайными позициями.
-        // var placemarks = [];
-        // for (var i = 0, l = 100; i < l; i++) {
-        //     var placemark = new ymaps.Placemark(getRandomPosition(), {
-        //         // Устаналиваем данные, которые будут отображаться в балуне.
-        //         balloonContentHeader: 'Метка №' + (i + 1),
-        //         balloonContentBody: getContentBody(i),
-        //         balloonContentFooter: 'Мацуо Басё'
-        //     });
-        //     placemarks.push(placemark);
-        // }
-    
-        // clusterer.add(placemarks);
-        map.geoObjects.add(clusterer);
-    
-    
-        // function getRandomPosition () {
-        //     return [
-        //         mapCenter[0] + (Math.random() * 0.3 - 0.15),
-        //         mapCenter[1] + (Math.random() * 0.5 - 0.25)
-        //     ];
-        // }
-    
-        // var placemarkBodies;
-        // function getContentBody (num) {
-        //     if (!placemarkBodies) {
-        //         placemarkBodies = [
-        //             ['Слово скажу -', 'Леденеют губы.', 'Осенний вихрь!'].join('<br/>'),
-        //             ['Вновь встают с земли', 'Опущенные дождем', 'Хризантем цветы.'].join('<br/>'),
-        //             ['Ты свечу зажег.', 'Словно молнии проблеск,', 'В ладонях возник.'].join('<br/>')
-        //         ];
-        //     }
-        //     return '<br>' + placemarkBodies[num % placemarkBodies.length];
-        // }
-        // clusterer.balloon.open(clusterer.getClusters()[0]);
+function init() {
+    myMap = new ymaps.Map('map', {
+        center: [55.76, 37.64],
+        zoom: 10,
+        controls: ['zoomControl', 'searchControl', 'typeSelector', 'geolocationControl']
+    }, {
+        searchControlProvider: 'yandex#search'
     });
+    let objectManager = new ymaps.ObjectManager({
+        preset: 'islands#invertedVioletClusterIcons',
+        clusterDisableClickZoom: true,
+        clusterize: true,
+        clusterBalloonContentLayout: 'cluster#balloonCarousel',
+        clusterBalloonContentLayoutWidth: 200,
+        clusterBalloonContentLayoutHeight: 150,
+        clusterBalloonItemContentLayout: customItemContentLayout,
+        clusterBalloonPanelMaxMapArea: 0
+    });
+
+    let customItemContentLayout = ymaps.templateLayoutFactory.createClass (
+        // Флаг "raw" означает, что данные вставляют "как есть" без экранирования html.
+        '<h2 class=ballon_header>{{ properties.balloonContentHeader|raw }}</h2>' +
+            '<div class=ballon_body>{{ properties.balloonContentBody|raw }}</div>' +
+            '<div class=ballon_footer>{{ properties.balloonContentFooter|raw }}</div>'
+    );
+
+    // запрет открывать баллун по одиночной метке
+    objectManager.options.set('geoObjectOpenBalloonOnClick', false);
+    // добавить objectManager
+    myMap.geoObjects.add(objectManager);
+    createIcons(storage);
+
+    myMap.events.add('click', (e) => {
+        let windowCoords = e.get('pagePixels');
+        let targetCoords = e.get('coords');                      
+
+        getAddress(targetCoords)
+            .then((address) => {
+                createContainer(windowCoords, targetCoords, address);
+            });
+    });
+    
+    map.addEventListener('click', (e) => {
+        if (e.target.dataset.coord) {
+            let targetCoords = e.target.dataset.coord;
+            let windowCoords = [e.clientX, e.clientY]; 
+
+            clusterer.balloon.close();
+
+            getAddress(targetCoords)
+                .then((address) => {
+                    createContainer(windowCoords, targetCoords, address);
+                });
+        }
+    });
+
+    function getAddress(coords) {
+        return ymaps.geocode(coords).then((res) => {
+            let firstGeoObject = res.geoObjects.get(0);
+            
+            return firstGeoObject.getAddressLine();
+        });
+    }
+
+    function createIcon(coords, review) {
+        let icon = new ymaps.Placemark(coords, {
+            openBalloonOnClick: false,
+            balloonContentHeader: review.place,
+            balloonContentCoords: review.coords,
+            balloonContentLink: review.address,
+            balloonContentBody: review.text,
+            balloonContentFooter: review.date
+        }, { preset: 'islands#blueHomeCircleIcon' });
+        
+        icon.events.add('click', (e) => {
+            e.preventDefault();
+            let windowCoords = e.get('pagePixels');
+
+            getAddress(coords)
+                .then((address) => {
+                    createContainer(windowCoords, coords, address);
+                });                    
+        });
+
+        myMap.geoObjects.add(icon);
+        clusterer.add(icon);
+    }
+
+    function createIcons(storage) {
+        storage.forEach((review) => {
+            createIcon(review.coords, review);
+        });
+    }
+
+    function createContainer(windowCoords, targetCoords, address) {
+        let exsistReviews = getSet.searchReviewsByAddress(address);
+        let container = getView.renderReview(windowCoords, targetCoords, address, map, exsistReviews);                        
+        let submitBtn = document.querySelector('.form__btn');
+        let closeBtn = document.querySelector('.header__button');
+
+        submitBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            let formElements = [...document.querySelector('.form').elements];
+            let newReview = getSet.saveReviews(address, formElements, targetCoords);
+
+            createIcon(targetCoords, newReview);
+            // getView.addReview(container, newReview);
+        });
+
+        closeBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            getView.destroyChild(map, container);
+        });
+
+        return container;
+    }
+    
 }

@@ -1,62 +1,13 @@
-<div class="review__block">
-    <header class="review__header">
-        <div class="header__img"></div>
-        <h3 class="header__title">Брестская 45</h3>
-        <div class="header__button"></div>
-    </header>
-    <div class="review__content">
-        <ul class="review__list" id="reviews-list">
-            {{!-- {{#each reviews}} --}}
-                <li class="review__item">
-                    <div class="review__item-header">
-                        <span class="review__item-name">Jkmsjd</span>
-                        <span class="review__item-place">Родакьывва</span>
-                        <span class="review__item-date">25.06.2018</span>
-                    </div>
-                    <p class="review__item-text">
-                        Lorem ipsum dolor sit amet consectetur.
-                    </p>
-                </li>
-                <li class="review__item">
-                    <div class="review__item-header">
-                        <span class="review__item-name">Jkmsjd</span>
-                        <span class="review__item-place">Родакьывва</span>
-                        <span class="review__item-date">25.06.2018</span>
-                    </div>
-                    <p class="review__item-text">
-                        Lorem ipsum dolor sit amet consectetur.
-                    </p>
-                </li>
-                <li class="review__item">
-                    <div class="review__item-header">
-                        <span class="review__item-name">Jkmsjd</span>
-                        <span class="review__item-place">Родакьывва</span>
-                        <span class="review__item-date">25.06.2018</span>
-                    </div>
-                    <p class="review__item-text">
-                        Lorem ipsum dolor sit amet consectetur.
-                    </p>
-                </li>
-                <li class="review__item">
-                    <div class="review__item-header">
-                        <span class="review__item-name">Jkmsjd</span>
-                        <span class="review__item-place">Родакьывва</span>
-                        <span class="review__item-date">25.06.2018</span>
-                    </div>
-                    <p class="review__item-text">
-                        Lorem ipsum dolor sit amet consectetur.
-                    </p>
-                </li>
-            {{!-- {{/each}} --}}
-        </ul>
-        <form class="review__form form">
-            <h2 class="form__title">ВАШ ОТЗЫВ</h2>
-            <input class="form__input form__input_name" type="text" placeholder="Ваше имя">
-            <input class="form__input form__input_place" type="text" placeholder="Укажите место">
-            <textarea class="form__textarea__text" id="textReview"  placeholder="Поделитесь впечатлениями"></textarea>
-            <div class="form__footer">
-                <input class="form__btn" type="submit" value="Добавить" id="save">
-            </div>            
-        </form>
-    </div>
-</div>
+{{#each reviews}}
+    <li class="review__item">
+        <div class="review__item-header">
+            <span class="review__item-name">{{ name }}</span>
+            <span class="review__item-place">{{ place }}</span>
+            <span class="review__item-date">{{ date }}</span>
+        </div>
+        <p class="review__item-text">
+            {{ textReview }}
+        </p>
+    </li>
+{{/each}}
+

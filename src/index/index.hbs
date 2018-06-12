@@ -10,9 +10,30 @@
 <body>
 <div class="wrapper" id="wrapper">
     <div class="map" id='map'></div>
-    <div class="review">
-        {{> './review-block.hbs'}}
-        {{!-- {{> './single-review.hbs'}} --}}
+    <div class="review hide">
+        <header class="review__header">
+            <div class="header__img"></div>
+            <h3 class="header__title">{{ address }}</h3>
+            <div class="header__button"></div>
+        </header>
+        
+        <div class="review__content">
+            <ul class="review__list" id="reviews-list">
+                {{> './review-block.hbs'}}
+            </ul>
+            
+            <form class="review__form form">
+                <h2 class="form__title">ВАШ ОТЗЫВ</h2>
+                <input type="hidden" id="address">
+                <input type="hidden" id="coords">   
+                <input class="form__input form__input_name" type="text" placeholder="Ваше имя" name="name">
+                <input class="form__input form__input_place" type="text" placeholder="Укажите место" name="place">
+                <textarea class="form__textarea__text" id="textReview"  placeholder="Поделитесь впечатлениями" name="review"></textarea>
+                <div class="form__footer">
+                    <input class="form__btn" type="submit" value="Добавить" id="save">
+                </div>            
+            </form>
+        </div>
     </div>
 </div>
 </body>
